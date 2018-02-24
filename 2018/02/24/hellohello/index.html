@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" >
     <title>
         
-        加0童鞋 · fi3ework&#39;s Studio
+        hellohello · fi3ework&#39;s Studio
         
     </title>
     <link rel="icon" href= /assests/favicon.ico>
@@ -81,7 +81,7 @@
                 <a href="/" >fi3ework&#39;s Studio.</a>
             </div>
             <div class="post-title">
-                <a href="#" class="post-name">加0童鞋</a>
+                <a href="#" class="post-name">hellohello</a>
             </div>
     </div>
     
@@ -102,7 +102,7 @@
         <h1 class="intro-title">
             <!-- 主页  -->
             
-            加0童鞋
+            hellohello
             <!-- 404 -->
             
         </h1>
@@ -120,7 +120,7 @@
             
             <div class="post-intro-meta">
                 <span class="post-intro-calander iconfont-archer">&#xe676;</span>
-                <span class="post-intro-time">2017/09/23</span>
+                <span class="post-intro-time">2018/02/24</span>
             </div>
         
     </div>
@@ -128,26 +128,59 @@
         <div class="container">
             <main class="main post-page">
     <article class="article-entry">
-        <a id="more"></a>
-<p>嗯哼 ！  加0童鞋  你好呀！</p>
-<p>只是测试代码哈</p>
+        <h3 id="Hash长度扩展攻击"><a href="#Hash长度扩展攻击" class="headerlink" title="Hash长度扩展攻击"></a>Hash长度扩展攻击</h3><hr>
+<p>  在ctf题里遇到一个hash长度攻击的题</p>
+<p>  关键代码:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">if ($COOKIE[&quot;getmein&quot;] === md5($secret . urldecode($username . $password)))</div></pre></td></tr></table></figure>
+<p>这里的secret我们不可知 但是我们知道它的长度 这就是在设计了hash扩展长度攻击</p>
+<hr>
+<h4 id="介绍一下MD5算法"><a href="#介绍一下MD5算法" class="headerlink" title="介绍一下MD5算法"></a>介绍一下MD5算法</h4><p><img src="C:\Users\admin\AppData\Local\Temp\Image.jpg" alt="Image"></p>
+<p>上面的图示是转载别人博客上的</p>
+<p>MD5会把原数据分成512为一块的许多块，最后一块加上64字节来表示他的长度，一共构成512*n个字节然后再对这N个512数据块进行N次加密计算</p>
+<h4 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h4><hr>
+<p>比如计算字符串“test”</p>
+<p>十六进制0x74657374</p>
+<p>二进制0b1110100011001010111001101110100</p>
+<p>md5后面运算过程都是需要512比特为一组来进行运算，先说一下简单的数据比较少 不存在分组的时候的填充，首先512比特的末尾64比特是存放原明文消息的长度，512比特开始是明文数据紧接着明文后填一位1(2进制)，其余全是0，假设我明文就一个字符串‘test’那么填充就是0x74657374800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000</p>
+<p>最后的四字节 2000000000000000 代表’test’长度</p>
+<p>将补位后的数据进行一次复杂的运算，计算出</p>
+<p>A=0xcd6b8f09</p>
+<p>B=0x73d32146</p>
+<p>C=0x834edeca</p>
+<p>D=0xf6b42726</p>
+<p>因为数据小于512位 将ABCD通过小端规则转换就是MD5值</p>
+<p>如果输入不是test 而是大于512小于1024就要算两次，大于1024小于1536就要算3次</p>
+<p>用前面一次的512的ABCD值来计算后面一次512ABCD值，直到最后一次数据小于512位</p>
+<p> 那么 两个字符串组成一个字符串($str=$a+$b)，第一个字符串不可知也不可控，只可控第二个字符串（b），同时知道第一个字符串（a）的MD5值和长度，把第二个字符串构造一下，就可以算出（str）的MD5值</p>
+<hr>
+<p>假如$a = “test”,为了方便转为十六进制0x74657374</p>
+<p>构造第二个字符串首先手动把$str补为一个标准的可以直接计算的512位 就像上面的例子的</p>
+<p>然后我们添加一个0x746573748</p>
+<p>使得str大于512小于1024位 补充之后是</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$str=0x7465737480000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000074657374800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002002000000000000</div></pre></td></tr></table></figure>
+<p>我们可以计算前面一部分的ABCD的值，和之前test计算值相同</p>
+<p>第二部分就用第一部分的ABCD再去计算  算出来是:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">e5596322eb12df999ef55368856340f5</div></pre></td></tr></table></figure>
+<hr>
+<p>我们知道的条件：</p>
+<p>a的MD5值 a的长度 = 4 b为我们控制</p>
+<p>由第一个可以得到ABCD（逆算）  我们构造</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$b=&apos;\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x20\x00\x00\x00\x00\x00\x00\x00&apos;+&apos;test&apos;</div></pre></td></tr></table></figure>
+<p>str里的a我们不知道 假设四个长度a=“aaaa”  </p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$str=&apos;aaaa&apos;+&apos;\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x20\x00\x00\x00\x00\x00\x00\x00&apos;+&apos;test&apos;</div></pre></td></tr></table></figure>
+<p>我们再继续算str  </p>
+<p>因为大于512位，补为1024位，分为两个部分，计算第一个部分ABCD值，再用第一部分算出来的ABCD算第二部分</p>
+<p>因为第一部分ABCD我们可以逆推出来，我们可以直接进行用第一步ABCD算第二部分的值，只需要把标准MD5值改为逆推的值</p>
 
     </article>
     <!-- 前后页  -->
     <ul class="post-pager">
         
-            <li class="next">
-                <a href= "/2018/02/24/hash长度攻击/" title= hash长度攻击 >
-                    <span>Next Post</span>
-                    <span>hash长度攻击</span>
-                </a>
-            </li>
-        
         
             <li class="previous">
-                <a href= "/2017/09/23/hello-world/" title= Hello World >
+                <a href= "/2018/02/24/hash长度攻击/" title= hash长度攻击 >
                     <span>Previous Post</span>
-                    <span>Hello World</span>
+                    <span>hash长度攻击</span>
                 </a>
             </li>
         

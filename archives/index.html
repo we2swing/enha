@@ -103,6 +103,39 @@
     
     
         <article class="index-post">
+            <a class="content-show-full" href = "/2018/02/24/hellohello/" >
+                    <h2 class="abstract-title">
+                        
+                        <span>hellohello</span>
+                    </h2>
+                <div class="abstract-content">
+                    Hash长度扩展攻击
+  在ctf题里遇到一个hash长度攻击的题
+  关键代码:
+1if ($COOKIE[&quot;getmein&quot;] === md5($secret . urldecode($username . $password)))
+这里的secret我们不可知 但是我们知道它的长度 这就是在设计了hash扩展长度攻击
+
+介绍一下MD5算法
+上面的图示是转载别人博客上的
+MD5会把原数据分成512为一块的许多块，最后一块加上64字节来表示他的长度，一共构成512*n个字节然后再对这N个512数据块进行N次加密计算
+举个例子
+比如计算字符串“test”
+十六进制0x...
+                </div>
+            </a>
+            <div class="abstract-post-meta">
+                <!-- tags  -->
+                
+                <!-- date  -->
+                <div class="abstract-date">
+                    <span class="abstract-calander iconfont-archer"></span><span class="abstract-time">2018/02/24</span>
+                </div>
+            </div>
+        </article>
+    
+    
+    
+        <article class="index-post">
             <a class="content-show-full" href = "/2018/02/24/hash长度攻击/" >
                     <h2 class="abstract-title">
                         
@@ -251,7 +284,12 @@ More...
     
     
     
-    <div class="total-archive"> Total : 3 </div>
+    
+    
+    
+    
+    
+    <div class="total-archive"> Total : 4 </div>
     
     <div class="post-archive">
     
@@ -260,6 +298,11 @@ More...
     
     <div class="archive-year"> 2018 </div>
     <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">02/24</span><a class="archive-post-title" href= "/2018/02/24/hellohello/" >hellohello</a>
+        </li>
     
     
         <li class="archive-post-item">
