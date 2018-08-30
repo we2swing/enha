@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" >
     <title>
         
-        fi3ework&#39;s Studio
+        正则 · fi3ework&#39;s Studio
         
     </title>
     <link rel="icon" href= /assests/favicon.ico>
@@ -68,13 +68,22 @@
     
 </head>
     
-        <body class="home-body">
+        <body class="post-body">
     
     
-<header class="header index-header">
+<header class="header">
 
     <div class="header-sidebar-menu">&#xe775;</div>
     <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >fi3ework&#39;s Studio.</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">正则</a>
+            </div>
+    </div>
     
     <a class="home-link" href=/>fi3ework's Studio.</a>
 </header>
@@ -84,17 +93,17 @@
     <!-- 主页  -->
     
     
-    <!-- 文章页  -->
+    <!-- 404页  -->
             
-    <div class="site-intro-img" style="background-image: url(http://oumn0o088.bkt.clouddn.com/intro-desktop.jpg)"></div>
+    <div class="site-intro-img" style="background-image: url(http://oumn0o088.bkt.clouddn.com/post-bg.jpg)"></div>
     <div class="site-intro-placeholder"></div>
     <div class="site-intro-meta">
         <!-- 标题  -->
         <h1 class="intro-title">
             <!-- 主页  -->
             
-            fi3ework's Studio.
-            <!-- 文章页  -->
+            正则
+            <!-- 404 -->
             
         </h1>
         <!-- 副标题 -->
@@ -102,132 +111,57 @@
             <!-- 主页副标题  -->
             
             
-                it's better to burn out than to fade away
-            
-            <!-- 文章页  -->
-            
+        </p>
+        <!-- 404 -->
+        
         <!-- 文章页meta -->
+        
+            <!-- 文章页标签  -->
+            
+            <div class="post-intro-meta">
+                <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                <span class="post-intro-time">2018/08/30</span>
+            </div>
         
     </div>
 </div>
         <div class="container">
-            <main class="main index-page">
-    
-    
-    
-        <article class="index-post">
-            <a class="content-show-full" href = "/2018/02/24/hash长度攻击/" >
-                    <h2 class="abstract-title">
-                        
-                        <span>hash长度攻击</span>
-                    </h2>
-                <div class="abstract-content">
-                    
-Hash长度扩展攻击
-  在ctf题里遇到一个hash长度攻击的题
-  关键代码:
-1if ($COOKIE[&quot;getmein&quot;] === md5($secret . urldecode($username . $password)))
-这里的secret我们不可知 但是我们知道它的长度 这就是在设计了hash扩展长度攻击
+            <main class="main post-page">
+    <article class="article-entry">
+        <p>  要想查找数字，字母或数字，空白是很简单的，因为已经有了对应这些字符集合的元字符，但是如果你想匹配没有预定义元字符的字符集合(比如元音字母a,e,i,o,u),应该怎么办？</p>
+<p>很简单，你只需要在方括号里列出它们就行了，像[aeiou]就匹配任何一个英文元音字母，[.?!]匹配标点符号(.或?或!)。</p>
+<p>　　我们也可以轻松地指定一个字符范围，像[0-9]代表的含意与\d就是完全一致的：一位数字；同理[a-z0-9A-Z_]也完全等同于\w（如果只考虑英文的话）。</p>
+<p>下面是一个更复杂的表达式：(?0\d{2}[) -]?\d{8}。</p>
+<p>　　“(”和“)”也是元字符，后面的分组节里会提到，所以在这里需要使用转义。</p>
+<p>　　这个表达式可以匹配几种格式的电话号码，像(010)88886666，或022-22334455，或02912345678等。我们对它进行一些分析吧：首先是一个转义字符(,它能出现0次或1次(?),然后是一个0，后面跟着2个数字(\d{2})，然后是)或-或空格中的一个，它出现1次或不出现(?)，最后是8个数字(\d{8})。</p>
+<h3 id="分支条件"><a href="#分支条件" class="headerlink" title="分支条件"></a>分支条件</h3><p>  不幸的是，刚才那个表达式也能匹配010)12345678或(022-87654321这样的“不正确”的格式。要解决这个问题，我们需要用到分枝条件。正则表达式里的分枝条件指的是有几种规则，如果满足其中任意一种规则都应该当成匹配，具体方法是用|把不同的规则分隔开。</p>
+<p>(0\d{2})[- ]?\d{8}|0\d{2}[- ]?\d{8}这个表达式匹配3位区号的电话号码，其中区号可以用小括号括起来，也可以不用。</p>
+<h3 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h3><p>(\d{1,3}.){3}\d{1,3}是一个简单的IP地址匹配表达式。要理解这个表达式，请按下列顺序分析它：\d{1,3}匹配1到3位的数字，(\d{1,3}.){3}匹配三位数字加上一个英文句号(这个整体也就是这个分组)重复3次，最后再加上一个一到三位的数字(\d{1,3})。</p>
+<p>不幸的是，它也将匹配256.300.888.999这种不可能存在的IP地址。如果能使用算术比较的话，或许能简单地解决这个问题，但是正则表达式中并不提供关于数学的任何功能，所以只能使用冗长的分组，选择，字符类来描述一个正确的IP地址：((2[0-4]\d|25[0-5]|[01]?\d\d?).){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)。</p>
+<h3 id="反义："><a href="#反义：" class="headerlink" title="反义："></a>反义：</h3><p>有时需要查找不属于某个能简单定义的字符类的字符。比如想查找除了数字以外，其它任意字符都行的情况，这时需要用到反义：<br>代码/语法<br>说明<br>\W<br>匹配任意不是字母，数字，下划线，汉字的字符<br>\S<br>匹配任意不是空白符的字符<br>\D<br>匹配任意非数字的字符<br>\B<br>匹配不是单词开头或结束的位置<br>[^x]<br>匹配除了x以外的任意字符<br>[^aeiou]<br>匹配除了aeiou这几个字母以外的任意字符<br>例子：\S+匹配不包含空白符的字符串。</p>
+<p><a[^>]+&gt;匹配用尖括号括起来的以a开头的字符串。</a[^></p>
+<h3 id="后向引用："><a href="#后向引用：" class="headerlink" title="后向引用："></a>后向引用：</h3><p>后向引用用于重复搜索前面某个分组匹配的文本。例如，\1代表分组1匹配的文本。难以理解？请看示例：<br>\b(\w+)\b\s+\1\b可以用来匹配重复的单词，像go go, 或者kitty kitty。这个表达式首先是一个单词，也就是单词开始处和结束处之间的多于一个的字母或数字(\b(\w+)\b)，这个单词会被捕获到编号为1的分组中，然后是1个或几个空白符(\s+)，最后是分组1中捕获的内容（也就是前面匹配的那个单词）(\1)。</p>
 
-介绍一下MD5算法
-上面的图示是转载别人博客上的
-MD5会把原数据分成512为一块的许多块，最后一块加上64字节来表示他的长度，一共构成512*n个字节然后再对这N个512数据块进行N次加密计算
-举个例子
-比如计算字符串“test”
-十六进制0...
-                </div>
-            </a>
-            <div class="abstract-post-meta">
-                <!-- tags  -->
-                
-                <!-- date  -->
-                <div class="abstract-date">
-                    <span class="abstract-calander iconfont-archer"></span><span class="abstract-time">2018/02/24</span>
-                </div>
-            </div>
-        </article>
-    
-    
-    
-        <article class="index-post">
-            <a class="content-show-full" href = "/2017/09/23/加0童鞋/" >
-                    <h2 class="abstract-title">
-                        
-                        <span>加0童鞋</span>
-                    </h2>
-                <div class="abstract-content">
-                    
-嗯哼 ！  加0童鞋  你好呀！
-我有点想你呀 怎么办呢
+    </article>
+    <!-- 前后页  -->
+    <ul class="post-pager">
+        
+        
+            <li class="previous">
+                <a href= "/2018/05/05/hello-world/" title=  >
+                    <span>Previous Post</span>
+                    <span>[Untitled Post]</span>
+                </a>
+            </li>
+        
+    </ul>
+    <!-- 来必力City版安装代码 -->
 
-                </div>
-            </a>
-            <div class="abstract-post-meta">
-                <!-- tags  -->
-                
-                <!-- date  -->
-                <div class="abstract-date">
-                    <span class="abstract-calander iconfont-archer"></span><span class="abstract-time">2017/09/23</span>
-                </div>
-            </div>
-        </article>
     
-    <!-- paginator  -->
-    
+
+<!-- City版安装代码已完成 -->
 </main>
             <!-- profile -->
-            
-            <div class="profile">
-    <img class="profile-avatar" src= /avatar/kumamon.jpg >
-    <div class="profile-name">fi3ework</div>
-    
-    <div class="profile-signature">
-        witness me
-    </div>
-    
-    
-    <div class="profile-social">
-        
-    
-        
-            
-                <a href="emailto:12345@qq.com" class="iconfont-archer email" title=email ></a>
-            
-        
-    
-        
-            
-                <a href="//github.com/fi3ework" class="iconfont-archer github" target="_blank" title="github"></a>
-            
-        
-    
-        
-    
-
-    </div>
-    
-    
-        <div class="friends">
-            <div>FRIENDS</div>
-            
-                <span>
-                    <a href= //www.baidu.com target="_black">friendA</a>
-                </span>
-            
-                <span>
-                    <a href= //www.google.com target="_black">friendB</a>
-                </span>
-            
-        </div>
-    
-    
-        <div class="about-me">
-            <div>
-                <a href = "/about" >ABOUT ME</a>
-            </div>
-        </div>
-    
-</div>
             
         </div>
         <footer class="footer">
@@ -292,7 +226,27 @@ MD5会把原数据分成512为一块的许多块，最后一块加上64字节来
     
     
     
-    <div class="total-archive"> Total : 2 </div>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-archive"> Total : 4 </div>
     
     <div class="post-archive">
     
@@ -301,6 +255,11 @@ MD5会把原数据分成512为一块的许多块，最后一块加上64字节来
     
     <div class="archive-year"> 2018 </div>
     <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">08/30</span><a class="archive-post-title" href= "/2018/08/30/正则/" >正则</a>
+        </li>
     
     
         <li class="archive-post-item">
@@ -319,6 +278,20 @@ MD5会把原数据分成512为一块的许多块，最后一块加上64字节来
     
         <li class="archive-post-item">
             <span class="archive-post-date">09/23</span><a class="archive-post-title" href= "/2017/09/23/加0童鞋/" >加0童鞋</a>
+        </li>
+    
+    
+    
+    
+    
+        </ul>
+    
+    <div class="archive-year"> Invalid date </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">Invalid date</span><a class="archive-post-title" href= "/2018/05/05/hello-world/" >[Untitled Post]</a>
         </li>
     
     </div>
