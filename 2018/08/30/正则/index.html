@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" >
     <title>
         
-        hash长度攻击 · fi3ework&#39;s Studio
+        正则 · fi3ework&#39;s Studio
         
     </title>
     <link rel="icon" href= /assests/favicon.ico>
@@ -81,7 +81,7 @@
                 <a href="/" >fi3ework&#39;s Studio.</a>
             </div>
             <div class="post-title">
-                <a href="#" class="post-name">hash长度攻击</a>
+                <a href="#" class="post-name">正则</a>
             </div>
     </div>
     
@@ -102,7 +102,7 @@
         <h1 class="intro-title">
             <!-- 主页  -->
             
-            hash长度攻击
+            正则
             <!-- 404 -->
             
         </h1>
@@ -120,7 +120,7 @@
             
             <div class="post-intro-meta">
                 <span class="post-intro-calander iconfont-archer">&#xe676;</span>
-                <span class="post-intro-time">2018/02/24</span>
+                <span class="post-intro-time">2018/08/30</span>
             </div>
         
     </div>
@@ -128,67 +128,29 @@
         <div class="container">
             <main class="main post-page">
     <article class="article-entry">
-        <a id="more"></a>
-<h3 id="Hash长度扩展攻击"><a href="#Hash长度扩展攻击" class="headerlink" title="Hash长度扩展攻击"></a>Hash长度扩展攻击</h3><hr>
-<p>  在ctf题里遇到一个hash长度攻击的题</p>
-<p>  关键代码:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">if ($COOKIE[&quot;getmein&quot;] === md5($secret . urldecode($username . $password)))</div></pre></td></tr></table></figure>
-<p>这里的secret我们不可知 但是我们知道它的长度 这就是在设计了hash扩展长度攻击</p>
-<hr>
-<h4 id="介绍一下MD5算法"><a href="#介绍一下MD5算法" class="headerlink" title="介绍一下MD5算法"></a>介绍一下MD5算法</h4><p><img src="C:\Users\admin\AppData\Local\Temp\Image.jpg" alt="Image"></p>
-<p>上面的图示是转载别人博客上的</p>
-<p>MD5会把原数据分成512为一块的许多块，最后一块加上64字节来表示他的长度，一共构成512*n个字节然后再对这N个512数据块进行N次加密计算</p>
-<h4 id="举个例子"><a href="#举个例子" class="headerlink" title="举个例子"></a>举个例子</h4><hr>
-<p>比如计算字符串“test”</p>
-<p>十六进制0x74657374</p>
-<p>二进制0b1110100011001010111001101110100</p>
-<p>md5后面运算过程都是需要512比特为一组来进行运算，先说一下简单的数据比较少 不存在分组的时候的填充，首先512比特的末尾64比特是存放原明文消息的长度，512比特开始是明文数据紧接着明文后填一位1(2进制)，其余全是0，假设我明文就一个字符串‘test’那么填充就是0x74657374800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002000000000000000</p>
-<p>最后的四字节 2000000000000000 代表’test’长度</p>
-<p>将补位后的数据进行一次复杂的运算，计算出</p>
-<p>A=0xcd6b8f09</p>
-<p>B=0x73d32146</p>
-<p>C=0x834edeca</p>
-<p>D=0xf6b42726</p>
-<p>因为数据小于512位 将ABCD通过小端规则转换就是MD5值</p>
-<p>如果输入不是test 而是大于512小于1024就要算两次，大于1024小于1536就要算3次</p>
-<p>用前面一次的512的ABCD值来计算后面一次512ABCD值，直到最后一次数据小于512位</p>
-<p> 那么 两个字符串组成一个字符串($str=$a+$b)，第一个字符串不可知也不可控，只可控第二个字符串（b），同时知道第一个字符串（a）的MD5值和长度，把第二个字符串构造一下，就可以算出（str）的MD5值</p>
-<hr>
-<p>假如$a = “test”,为了方便转为十六进制0x74657374</p>
-<p>构造第二个字符串首先手动把$str补为一个标准的可以直接计算的512位 就像上面的例子的</p>
-<p>然后我们添加一个0x746573748</p>
-<p>使得str大于512小于1024位 补充之后是</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$str=0x7465737480000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000000000000074657374800000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000002002000000000000</div></pre></td></tr></table></figure>
-<p>我们可以计算前面一部分的ABCD的值，和之前test计算值相同</p>
-<p>第二部分就用第一部分的ABCD再去计算  算出来是:</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">e5596322eb12df999ef55368856340f5</div></pre></td></tr></table></figure>
-<hr>
-<p>我们知道的条件：</p>
-<p>a的MD5值 a的长度 = 4 b为我们控制</p>
-<p>由第一个可以得到ABCD（逆算）  我们构造</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$b=&apos;\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x20\x00\x00\x00\x00\x00\x00\x00&apos;+&apos;test&apos;</div></pre></td></tr></table></figure>
-<p>str里的a我们不知道 假设四个长度a=“aaaa”  </p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">$str=&apos;aaaa&apos;+&apos;\x80\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x20\x00\x00\x00\x00\x00\x00\x00&apos;+&apos;test&apos;</div></pre></td></tr></table></figure>
-<p>我们再继续算str  </p>
-<p>因为大于512位，补为1024位，分为两个部分，计算第一个部分ABCD值，再用第一部分算出来的ABCD算第二部分</p>
-<p>因为第一部分ABCD我们可以逆推出来，我们可以直接进行用第一步ABCD算第二部分的值，只需要把标准MD5值改为逆推的值</p>
+        <p>  要想查找数字，字母或数字，空白是很简单的，因为已经有了对应这些字符集合的元字符，但是如果你想匹配没有预定义元字符的字符集合(比如元音字母a,e,i,o,u),应该怎么办？</p>
+<p>很简单，你只需要在方括号里列出它们就行了，像[aeiou]就匹配任何一个英文元音字母，[.?!]匹配标点符号(.或?或!)。</p>
+<p>　　我们也可以轻松地指定一个字符范围，像[0-9]代表的含意与\d就是完全一致的：一位数字；同理[a-z0-9A-Z_]也完全等同于\w（如果只考虑英文的话）。</p>
+<p>下面是一个更复杂的表达式：(?0\d{2}[) -]?\d{8}。</p>
+<p>　　“(”和“)”也是元字符，后面的分组节里会提到，所以在这里需要使用转义。</p>
+<p>　　这个表达式可以匹配几种格式的电话号码，像(010)88886666，或022-22334455，或02912345678等。我们对它进行一些分析吧：首先是一个转义字符(,它能出现0次或1次(?),然后是一个0，后面跟着2个数字(\d{2})，然后是)或-或空格中的一个，它出现1次或不出现(?)，最后是8个数字(\d{8})。</p>
+<h3 id="分支条件"><a href="#分支条件" class="headerlink" title="分支条件"></a>分支条件</h3><p>  不幸的是，刚才那个表达式也能匹配010)12345678或(022-87654321这样的“不正确”的格式。要解决这个问题，我们需要用到分枝条件。正则表达式里的分枝条件指的是有几种规则，如果满足其中任意一种规则都应该当成匹配，具体方法是用|把不同的规则分隔开。</p>
+<p>(0\d{2})[- ]?\d{8}|0\d{2}[- ]?\d{8}这个表达式匹配3位区号的电话号码，其中区号可以用小括号括起来，也可以不用。</p>
+<h3 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h3><p>(\d{1,3}.){3}\d{1,3}是一个简单的IP地址匹配表达式。要理解这个表达式，请按下列顺序分析它：\d{1,3}匹配1到3位的数字，(\d{1,3}.){3}匹配三位数字加上一个英文句号(这个整体也就是这个分组)重复3次，最后再加上一个一到三位的数字(\d{1,3})。</p>
+<p>不幸的是，它也将匹配256.300.888.999这种不可能存在的IP地址。如果能使用算术比较的话，或许能简单地解决这个问题，但是正则表达式中并不提供关于数学的任何功能，所以只能使用冗长的分组，选择，字符类来描述一个正确的IP地址：((2[0-4]\d|25[0-5]|[01]?\d\d?).){3}(2[0-4]\d|25[0-5]|[01]?\d\d?)。</p>
+<h3 id="反义："><a href="#反义：" class="headerlink" title="反义："></a>反义：</h3><p>有时需要查找不属于某个能简单定义的字符类的字符。比如想查找除了数字以外，其它任意字符都行的情况，这时需要用到反义：<br>代码/语法<br>说明<br>\W<br>匹配任意不是字母，数字，下划线，汉字的字符<br>\S<br>匹配任意不是空白符的字符<br>\D<br>匹配任意非数字的字符<br>\B<br>匹配不是单词开头或结束的位置<br>[^x]<br>匹配除了x以外的任意字符<br>[^aeiou]<br>匹配除了aeiou这几个字母以外的任意字符<br>例子：\S+匹配不包含空白符的字符串。</p>
+<p><a[^>]+&gt;匹配用尖括号括起来的以a开头的字符串。</a[^></p>
+<h3 id="后向引用："><a href="#后向引用：" class="headerlink" title="后向引用："></a>后向引用：</h3><p>后向引用用于重复搜索前面某个分组匹配的文本。例如，\1代表分组1匹配的文本。难以理解？请看示例：<br>\b(\w+)\b\s+\1\b可以用来匹配重复的单词，像go go, 或者kitty kitty。这个表达式首先是一个单词，也就是单词开始处和结束处之间的多于一个的字母或数字(\b(\w+)\b)，这个单词会被捕获到编号为1的分组中，然后是1个或几个空白符(\s+)，最后是分组1中捕获的内容（也就是前面匹配的那个单词）(\1)。</p>
 
     </article>
     <!-- 前后页  -->
     <ul class="post-pager">
         
-            <li class="next">
-                <a href= "/2018/05/05/hello-world/" title=  >
-                    <span>Next Post</span>
-                    <span>[Untitled Post]</span>
-                </a>
-            </li>
-        
         
             <li class="previous">
-                <a href= "/2017/09/23/加0童鞋/" title= 加0童鞋 >
+                <a href= "/2018/05/05/hello-world/" title=  >
                     <span>Previous Post</span>
-                    <span>加0童鞋</span>
+                    <span>[Untitled Post]</span>
                 </a>
             </li>
         
